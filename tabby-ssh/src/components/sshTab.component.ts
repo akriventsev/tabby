@@ -78,11 +78,17 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
         super.onFrontendReady()
     }
 
-    async setupOneSession (injector: Injector, profile: SSHProfile, multiplex = true): Promise<SSHSession> {
+    async setupOneSession (injector: Injector, profile: SSHProfile, multiplex = true,backoff=false): Promise<SSHSession> {
         let session = await this.sshMultiplexer.getSession(profile)
         if (!multiplex || !session || !profile.options.reuseSession) {
-            session = new SSHSession(injector, profile)
+            
+            if (backoff) {
+                profile.options.host = profile.options.backoffHost
+                profile.options.port = profile.options.backoffPort
+                profile.options.backoff  = true    
+            }
 
+            session = new SSHSession(injector, profile)
             if (profile.options.jumpHost) {
                 const jumpConnection = (await this.profilesService.getProfiles()).find(x => x.id === profile.options.jumpHost)
 
@@ -139,8 +145,10 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
             this.startSpinner(this.translate.instant(_('Connecting')))
 
             try {
+                this.notifications.info(`attemt to nonnect #${session.getAttempt()}`)
                 await session.start()
             } finally {
+                //this.notifications.error("karamba")
                 this.stopSpinner()
             }
 
@@ -175,8 +183,8 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
         super.attachSessionHandlers()
     }
 
-    private async initializeSessionMaybeMultiplex (multiplex = true): Promise<void> {
-        this.sshSession = await this.setupOneSession(this.injector, this.profile, multiplex)
+    private async initializeSessionMaybeMultiplex (multiplex = true,backoff = false): Promise<void> {
+        this.sshSession = await this.setupOneSession(this.injector, this.profile, multiplex,backoff)
         const session = new SSHShellSession(this.injector, this.sshSession, this.profile)
 
         this.setSession(session)
@@ -185,9 +193,9 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
             this.write(`\r${colors.black.bgWhite(' SSH ')} ${msg}\r\n`)
             session.resize(this.size.columns, this.size.rows)
         })
-
         await session.start()
-
+        
+        
         if (this.config.store.ssh.clearServiceMessagesOnConnect) {
             this.frontend?.clear()
         }
@@ -203,8 +211,12 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
             try {
                 await this.initializeSessionMaybeMultiplex(false)
             } catch (e) {
-                this.write(colors.black.bgRed(' X ') + ' ' + colors.red(e.message) + '\r\n')
-                return
+                try {
+                    await this.initializeSessionMaybeMultiplex(false,true)
+                } catch (error) {
+                    this.write(colors.black.bgRed(' X ') + ' ' + colors.red(e.message) + '\r\n')
+                    return
+                }
             }
         }
     }

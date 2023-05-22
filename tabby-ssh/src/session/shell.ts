@@ -25,7 +25,7 @@ export class SSHShellSession extends BaseSession {
         this.setLoginScriptsOptions(this.profile.options)
         this.ssh.serviceMessage$.subscribe(m => this.serviceMessage.next(m))
     }
-
+    
     async start (): Promise<void> {
         if (!this.ssh) {
             throw new Error('SSH session not set')

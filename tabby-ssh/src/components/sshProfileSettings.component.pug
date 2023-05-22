@@ -79,7 +79,21 @@ ul.nav-tabs(ngbNav, #nav='ngbNav')
                         placeholder='5000',
                         [(ngModel)]='profile.options.socksProxyPort',
                     )
+            .d-flex.w-100(*ngIf='connectionMode === "direct"')
+                .mb-3.w-100.me-2
+                    label(translate) Backoff host
+                    input.form-control(
+                        type='text',
+                        [(ngModel)]='profile.options.backoffHost',
+                    )
 
+                .mb-3
+                    label(translate) Backoff port
+                    input.form-control(
+                        type='number',
+                        placeholder='22',
+                        [(ngModel)]='profile.options.backoffPort',
+                    )
             .d-flex.w-100(*ngIf='connectionMode === "httpProxy"')
                 .mb-3.w-100.me-2
                     label(translate) HTTP proxy host
@@ -249,7 +263,7 @@ ul.nav-tabs(ngbNav, #nav='ngbNav')
                     .title(translate) Ready Timeout (Milliseconds)
                 input.form-control(
                     type='number',
-                    placeholder='20000',
+                    placeholder='5000',
                     [(ngModel)]='profile.options.readyTimeout',
                 )
 

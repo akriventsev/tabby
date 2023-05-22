@@ -73,7 +73,7 @@ export class SSHSession {
     authUsername: string|null = null
 
     open = false
-
+    private attempt = 0
     private logger: Logger
     private refCount = 0
     private remainingAuthMethods: AuthMethod[] = []
@@ -191,8 +191,11 @@ export class SSHSession {
         return new SFTPSession(this.sftp, this.injector)
     }
 
-
+    getAttempt() {
+        return this.attempt
+    }
     async start (): Promise<void> {
+        this.attempt += 1
         const log = (s: any) => this.emitServiceMessage(s)
 
         const ssh = new Client()
@@ -314,7 +317,6 @@ export class SSHSession {
                     this.authUsername = 'root'
                 }
             }
-
             ssh.connect({
                 host: this.profile.options.host.trim(),
                 port: this.profile.options.port ?? 22,

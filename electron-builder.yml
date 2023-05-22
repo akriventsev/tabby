@@ -39,6 +39,7 @@ win:
   icon: "./build/windows/icon.ico"
   artifactName: tabby-${version}-portable-${env.ARCH}.${ext}
   rfc3161TimeStampServer: http://timestamp.sectigo.com
+  target: "portable"
 nsis:
   oneClick: false
   artifactName: tabby-${version}-setup-${env.ARCH}.${ext}

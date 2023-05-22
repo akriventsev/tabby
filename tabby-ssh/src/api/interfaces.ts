@@ -12,8 +12,11 @@ export interface SSHProfile extends BaseTerminalProfile {
 }
 
 export interface SSHProfileOptions extends LoginScriptsOptions {
+    backoff: boolean,
     host: string
     port?: number
+    backoffHost: string
+    backoffPort?: number
     user: string
     auth?: null|'password'|'publicKey'|'agent'|'keyboardInteractive'
     password?: string
