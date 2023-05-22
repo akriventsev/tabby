@@ -79,7 +79,7 @@ jobs:
 
     - name: Build and sign packages
       run: scripts/build-macos.mjs
-      if: github.repository == 'Eugeny/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags'))
+      if: github.repository == 'akriventsev/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags'))
       env:
         ARCH: ${{matrix.arch}}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -93,7 +93,7 @@ jobs:
 
     - name: Build packages without signing
       run: scripts/build-macos.mjs
-      if: "! (github.repository == 'Eugeny/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')))"
+      if: "! (github.repository == 'akriventsev/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')))"
       env:
         ARCH: ${{matrix.arch}}
         # DEBUG: electron-builder,electron-builder:*
@@ -199,7 +199,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         KEYGEN_TOKEN: ${{ secrets.KEYGEN_TOKEN }}
         USE_HARD_LINKS: false
-      if: matrix.build-arch == 'arm64' && github.repository == 'Eugeny/tabby' && startsWith(github.ref, 'refs/tags')
+      if: matrix.build-arch == 'arm64' && github.repository == 'akriventsev/tabby' && startsWith(github.ref, 'refs/tags')
 
     - name: Install deps and Build (armv7l)
       uses: docker://multiarch/ubuntu-core:armhf-bionic
@@ -223,7 +223,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         KEYGEN_TOKEN: ${{ secrets.KEYGEN_TOKEN }}
         USE_HARD_LINKS: false
-      if: matrix.build-arch == 'armv7l' && github.repository == 'Eugeny/tabby' && startsWith(github.ref, 'refs/tags')
+      if: matrix.build-arch == 'armv7l' && github.repository == 'akriventsev/tabby' && startsWith(github.ref, 'refs/tags')
 
     - name: Upload symbols
       run: |
@@ -236,12 +236,12 @@ jobs:
         SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
 
     - name: Upload packages to packagecloud.io
-      uses: Eugeny/packagecloud-action@main
-      if: github.repository == 'Eugeny/tabby' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+      uses: akriventsev/packagecloud-action@main
+      if: github.repository == 'akriventsev/tabby' && github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
       env:
         PACKAGECLOUD_TOKEN: ${{ secrets.PACKAGECLOUD_TOKEN }}
       with:
-        repo: 'eugeny/tabby'
+        repo: 'akriventsev/tabby'
         dir: 'dist'
 
     - uses: actions/upload-artifact@master
@@ -314,7 +314,7 @@ jobs:
 
     - name: Build and sign packages
       run: node scripts/build-windows.mjs
-      if: github.repository == 'Eugeny/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags'))
+      if: github.repository == 'akriventsev/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags'))
       env:
         ARCH: ${{matrix.arch}}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -325,7 +325,7 @@ jobs:
 
     - name: Build packages without signing
       run: node scripts/build-windows.mjs
-      if: "!(github.repository == 'Eugeny/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')))"
+      if: "!(github.repository == 'akriventsev/tabby' && github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags')))"
       env:
         ARCH: ${{matrix.arch}}
 
