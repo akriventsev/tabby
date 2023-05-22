@@ -190,8 +190,7 @@ export class SSHSession {
         }
         return new SFTPSession(this.sftp, this.injector)
     }
-
-    getAttempt() {
+    getAttempt (): number  {
         return this.attempt
     }
     async start (): Promise<void> {
