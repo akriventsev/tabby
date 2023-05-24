@@ -82,10 +82,9 @@ export class SSHTabComponent extends BaseTerminalTabComponent<SSHProfile> implem
         let session = await this.sshMultiplexer.getSession(profile)
         if (!multiplex || !session || !profile.options.reuseSession) {
             if (backoff) {
-                profile.options.host = profile.options.backoffHost
-                profile.options.port = profile.options.backoffPort
                 profile.options.backoff = true
             }
+
             session = new SSHSession(injector, profile)
             if (profile.options.jumpHost) {
                 const jumpConnection = (await this.profilesService.getProfiles()).find(x => x.id === profile.options.jumpHost)

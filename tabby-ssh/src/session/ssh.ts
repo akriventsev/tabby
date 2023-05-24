@@ -316,7 +316,7 @@ export class SSHSession {
                     this.authUsername = 'root'
                 }
             }
-            ssh.connect({
+            let connection_params = {
                 host: this.profile.options.host.trim(),
                 port: this.profile.options.port ?? 22,
                 sock: this.proxyCommandStream?.socket ?? this.jumpStream,
@@ -337,7 +337,13 @@ export class SSHSession {
                         callback(await this.handleAuth(methodsLeft))
                     })
                 },
-            })
+            }
+            if (this.profile.options.backoff) {
+                connection_params.host = this.profile.options.backoffHost.trim()
+                connection_params.port = this.profile.options.backoffPort ?? 22
+                this.profile.options.backoff = false
+            }
+            ssh.connect(connection_params)
         } catch (e) {
             this.notifications.error(e.message)
             throw e
