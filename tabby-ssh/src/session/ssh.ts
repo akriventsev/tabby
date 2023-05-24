@@ -316,7 +316,7 @@ export class SSHSession {
                     this.authUsername = 'root'
                 }
             }
-            let connection_params = {
+            const connection_params = {
                 host: this.profile.options.host.trim(),
                 port: this.profile.options.port ?? 22,
                 sock: this.proxyCommandStream?.socket ?? this.jumpStream,
